@@ -28,9 +28,9 @@ public class Room
     }
     public Status status = Status.PREPARE;
     //回合数
-    public int count = 0;
+    public int count = 1;
     //当前回合
-    public int curOrder = 0;
+    public int curOrder = 1;
 
 
 
@@ -242,6 +242,10 @@ public class Room
         //状态
         status = Status.FIGHT;
         cunHuo = playerIds.Count;
+        curOrder = 1;
+        count = 1;
+        content = "";
+        time = 0;
         HouseInit();
         TreasureInit();
         FateInit();

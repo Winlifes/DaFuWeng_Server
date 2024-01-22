@@ -11,9 +11,9 @@ public class MsgGetPlayerInfo:MsgBase {
 
 //房间信息
 public class RoomInfo{
-	public int id = 0;		//房间id
-	public int count = 0;	//人数
-	public int status = 0;	//状态0-准备中 1-战斗中
+	public int id { get; set; } = 0;		//房间id
+	public int count { get; set; } = 0;	//人数
+	public int status { get; set; } = 0;	//状态0-准备中 1-战斗中
 }
 
 //请求房间列表

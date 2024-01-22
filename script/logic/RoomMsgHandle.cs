@@ -140,7 +140,7 @@ public partial class MsgHandler {
 		}
 		//成功
 		msg.result = 0;
-		player.Send(msg);
+		room.Broadcast(msg);
 	}
 
 	public static void MsgEnterBattle(ClientState c, MsgBase msgBase)
@@ -162,11 +162,11 @@ public partial class MsgHandler {
 		int i = 0;
         foreach (string id in room.playerIds.Keys)
         {
-            
-            msg.gameDates[i] = new GameDate(player.id, player.name, player.money, player.color, player.playOrder, player.position);
+            Player p = PlayerManager.GetPlayer(id);
+            msg.gameDates[i] = new GameDate(p.id, p.name, p.money, p.color, p.playOrder, p.position);
             i++;
         }
-        room.Broadcast(msg);
+        player.Send(msg);
     }
 
 }
