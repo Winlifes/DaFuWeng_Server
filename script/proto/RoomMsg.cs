@@ -71,6 +71,7 @@ public class MsgLeaveRoom:MsgBase {
 //开战
 public class MsgStartBattle:MsgBase {
 	public MsgStartBattle() {protoName = "MsgStartBattle";}
+	public int pid { get; set; } = 0;
 	//服务端回
 	public int result { get; set; } = 0;
 }

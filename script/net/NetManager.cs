@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 
 class NetManager
 {
@@ -145,6 +143,15 @@ class NetManager
 			Close(state);
 			return;
 		}
+		//防攻击
+        Console.WriteLine("Receive " + protoName);
+        MethodInfo mi = typeof(MsgHandler).GetMethod(protoName);
+		if (mi == null)
+		{
+            Console.WriteLine("OnReceiveData Invoke fail " + protoName);
+            return;
+		}
+
 		readBuff.readIdx += nameCount;
 		//解析协议体
 		int bodyCount = bodyLength - nameCount;
@@ -157,9 +164,9 @@ class NetManager
 		readBuff.readIdx += bodyCount;
 		readBuff.CheckAndMoveBytes();
 		//分发消息
-		MethodInfo mi =  typeof(MsgHandler).GetMethod(protoName);
+		
 		object[] o = {state, msgBase};
-		Console.WriteLine("Receive " + protoName);
+		
 		if(mi != null){
 			mi.Invoke(null, o);
 		}

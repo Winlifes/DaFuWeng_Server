@@ -1,4 +1,5 @@
-﻿public class PlayerData{
+﻿//对player类进行的封装（用于推送客户端）
+public class PlayerData{
 	//等级
 	public int level { get; set; } = 0;
 	//金币

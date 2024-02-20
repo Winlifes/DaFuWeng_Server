@@ -21,6 +21,7 @@ public class MsgPoCan:MsgBase
 {
 	public MsgPoCan() { protoName = "MsgPoCan"; }
 	public string name { get; set; } = "";
+    public int[] hid { get; set; }
 }
 
 public class MsgGuaJi:MsgBase

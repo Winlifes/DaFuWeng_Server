@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 public class MsgBase{
 	public string protoName { get; set; } = "";
     //编码器

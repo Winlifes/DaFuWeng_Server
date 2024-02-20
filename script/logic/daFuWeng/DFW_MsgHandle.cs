@@ -4,7 +4,7 @@ using static Room;
 
 public partial class MsgHandler
 {
-
+    //大富翁逻辑
     //同步位置协议
     public static void MsgSaizi(ClientState c, MsgBase msgBase)
     {
@@ -22,6 +22,12 @@ public partial class MsgHandler
         {
             return;
         }
+        //battle
+        if(room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
         //广播
         msg.name = player.name;
         msg.bushu = new Random().Next(1, 7);
@@ -51,15 +57,15 @@ public partial class MsgHandler
         {
             //惊喜
             msg.result = 2;
-            msg.tId = new Random().Next(0, room.treasures.Count);
-            room.TreasureAction(msg.tId, player);
+            msg.tId = new Random().Next(0, battle.treasures.Count);
+            battle.TreasureAction(msg.tId, player);
         }
         else if (x == 7 || x == 15 || x == 25 || x == 37)
         {
             //命运
             msg.result = 3;
-            msg.fId = new Random().Next(0, room.fates.Count);
-            room.FateAction(msg.fId, player);
+            msg.fId = new Random().Next(0, battle.fates.Count);
+            battle.FateAction(msg.fId, player);
         }
         else if (x == 31)
         {
@@ -71,7 +77,7 @@ public partial class MsgHandler
         {
             msg.result = 5;
             //房子
-            House h = room.GetHouse(x);
+            House h = battle.GetHouse(x);
             if (h != null)
             {
                 if (h.playerName != "")
@@ -125,7 +131,6 @@ public partial class MsgHandler
         //更新数据
         player.money = msg.money;
     }
-
     //结束回合协议
     public static void MsgSkip(ClientState c, MsgBase msgBase)
     {
@@ -143,19 +148,30 @@ public partial class MsgHandler
         {
             return;
         }
-        if(player.money < 0)
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
+        if (player.money < 0)
         {
             player.isPoCan = true;
-            room.cunHuo--;
+            battle.cunHuo--;
+            foreach (int i in player.property)
+            {
+                battle.houses[i].state = -1;
+                battle.houses[i].playerName = "";
+            }
             MsgPoCan msgPoCan = new MsgPoCan();
             msgPoCan.name = player.name;
+            msgPoCan.hid = player.property.ToArray();
             room.Broadcast(msgPoCan);
         }
-        if (room.Judgment())
+        if (battle.Judgment())
         {
             //某一方胜利，结束战斗
             room.status = Status.PREPARE;
-            room.timer.Dispose();
             //发送Result
             MsgBattleResult msgB = new MsgBattleResult();
             //统计信息
@@ -180,10 +196,12 @@ public partial class MsgHandler
                     r.data.coin += 5;
                 }
             }
+            room.battle = null;
+            BattleManager.RemoveBattle(battle.id);
             return;
         }
         //广播
-        msg.curOrder = (room.curOrder % room.playerIds.Count) + 1;
+        msg.curOrder = (battle.curOrder % room.playerIds.Count) + 1;
         Player p;
         bool b = false;
         while(!b)
@@ -195,7 +213,7 @@ public partial class MsgHandler
                 {
                     if (p.playOrder == msg.curOrder)
                     {
-                        if (!p.isPoCan && p.position!=0)
+                        if (!p.isPoCan && p.position != 0)
                         {
                             b = true;
                             msg.name = p.name;
@@ -208,14 +226,14 @@ public partial class MsgHandler
                     }
                 }
             }
-            if(!b) msg.curOrder = (room.curOrder % room.playerIds.Count) + 1;
+            if(!b) msg.curOrder = (msg.curOrder % room.playerIds.Count) + 1;
         }
         
         //更新数值
 
-        room.curOrder = msg.curOrder;
-        room.time = 0;
-        room.count++;
+        battle.curOrder = msg.curOrder;
+        battle.time = 0;
+        battle.count++;
 
         room.Broadcast(msg);
     }
@@ -256,7 +274,13 @@ public partial class MsgHandler
         {
             return;
         }
-        House h = room.GetHouse(msg.houseId);
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
+        House h = battle.GetHouse(msg.houseId);
         if (h == null)
         {
             return;
@@ -302,7 +326,13 @@ public partial class MsgHandler
         {
             return;
         }
-        House h = room.GetHouse(msg.houseId);
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
+        House h = battle.GetHouse(msg.houseId);
         if (h == null)
         {
             return;
@@ -355,7 +385,13 @@ public partial class MsgHandler
         {
             return;
         }
-        House h = room.GetHouse(msg.houseId);
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
+        House h = battle.GetHouse(msg.houseId);
         if (h == null)
         {
             return;
@@ -399,9 +435,15 @@ public partial class MsgHandler
         {
             return;
         }
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
         foreach (int houseId in msg.hid)
         {
-            House h = room.GetHouse(houseId);
+            House h = battle.GetHouse(houseId);
 
             if (h == null)
             {
@@ -446,9 +488,15 @@ public partial class MsgHandler
         {
             return;
         }
+        //battle
+        if (room.battle == null)
+        {
+            return;
+        }
+        DFW_Battle battle = (DFW_Battle)room.battle;
         foreach (int houseId in msg.hid)
         {
-            House h = room.GetHouse(houseId);
+            House h = battle.GetHouse(houseId);
 
             if (h == null)
             {
@@ -479,7 +527,7 @@ public partial class MsgHandler
         }
         foreach (int houseId in msg.hid)
         {
-            House h = room.GetHouse(houseId);
+            House h = battle.GetHouse(houseId);
 
             if (h == null)
             {

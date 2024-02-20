@@ -133,7 +133,7 @@ public partial class MsgHandler {
 			return;
 		}
 		//开战
-		if(!room.StartBattle()){
+		if(!room.StartBattle(msg.pid)){
 			msg.result = 1;
 			player.Send(msg);
 			return;
@@ -157,13 +157,13 @@ public partial class MsgHandler {
             return;
         }
         msg.mapId = 1;
-        msg.gameDates = new GameDate[room.playerIds.Count];
+        msg.gameDates = new GameData[room.playerIds.Count];
 
 		int i = 0;
         foreach (string id in room.playerIds.Keys)
         {
             Player p = PlayerManager.GetPlayer(id);
-            msg.gameDates[i] = new GameDate(p.id, p.name, p.money, p.color, p.playOrder, p.position);
+            msg.gameDates[i] = new GameData(p.id, p.name, p.money, p.color, p.playOrder, p.position);
             i++;
         }
         player.Send(msg);
