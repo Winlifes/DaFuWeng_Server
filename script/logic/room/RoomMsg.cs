@@ -43,16 +43,7 @@ public class MsgEnterRoom:MsgBase {
 }
 
 
-//房间玩家信息
-public class PlayerInfo{
-	public string id { get; set; } = "lpy";   //账号
-	public string name { get; set; } = "";
-	public int level { get; set; } = 0;
-	public int camp { get; set; } = 0;		//阵营
-	public int win { get; set; } = 0;			//胜利数
-	public int lost { get; set; } = 0;		//失败数
-	public int isOwner { get; set; } = 0;		//是否是房主
-}
+
 
 //获取房间信息
 public class MsgGetRoomInfo:MsgBase {
@@ -71,7 +62,8 @@ public class MsgLeaveRoom:MsgBase {
 //开战
 public class MsgStartBattle:MsgBase {
 	public MsgStartBattle() {protoName = "MsgStartBattle";}
-	public int pid { get; set; } = 0;
+	//战局类型
+	public int pid { get; set; } = 0;//0:大富翁	1：斗地主  2:轮盘赌
 	//服务端回
 	public int result { get; set; } = 0;
 }

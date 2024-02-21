@@ -1,4 +1,6 @@
-﻿public class BattleManager
+﻿using System.Runtime.InteropServices;
+
+public class BattleManager
 {
     //最大id
     private static int maxId = 1;
@@ -6,19 +8,25 @@
     public static Dictionary<int, Battle> battles = new Dictionary<int, Battle>();
 
     //创建对局
-    public static Battle AddBattle(int pid)
+    public static Battle AddBattle(Room.BattleType type)
     {
         Battle battle = null;
         maxId++;
-        switch(pid)
+        string className = type.ToString() + "_Battle";
+        Type t = Type.GetType(className);
+        
+        if(t != null)
         {
-            case 0: battle = new DFW_Battle();break;
-            case 1: battle = new DDZ_Battle();break;
-
-            default: return battle;
+            battle = t.Assembly.CreateInstance(className) as Battle;
+            
+            if(battle != null)
+            {
+                battle.id = maxId;
+                battles.Add(battle.id, battle);
+            }
+            
         }
-        battle.id = maxId;
-        battles.Add(battle.id, battle);
+        
         return battle;
     }
 

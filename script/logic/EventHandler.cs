@@ -3,7 +3,7 @@
 public partial class EventHandler
 {
 	public static void OnDisconnect(ClientState c){
-		Console.WriteLine("Close");
+		Console.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "Close");
 		//Player下线
 		if(c.player != null){
 			//离开战场

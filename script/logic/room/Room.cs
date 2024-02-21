@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 public class Room
 {
@@ -19,7 +20,17 @@ public class Room
         PREPARE = 0,
         FIGHT = 1,
     }
+    //战局玩法
+    public enum BattleType
+    {
+        DFW = 0,
+        DDZ = 1,
+        LPD = 2
+    }
+
     public Status status = Status.PREPARE;
+
+    public BattleType type = BattleType.DFW;
 
     public Battle battle = null;
 
@@ -170,48 +181,37 @@ public class Room
     }
 
     //能否开战
-    public bool CanStartBattle(int pid)
+    public bool CanStartBattle()
     {
         //已经是战斗状态
         if (status != Status.PREPARE)
         {
             return false;
         }
-        switch(pid)
+        string className = type.ToString();
+        Type t = Type.GetType(className);
+        if (t != null)
         {
-            case 0:
-                if (playerIds.Count < 2 || playerIds.Count > 6)
-                {//大富翁
-                    return false;
-                }
-                break;
-            case 1:
-                if (playerIds.Count != 3)
-                {//斗地主
-                    return false;
-                }
-                break;
-            case 3:
-                if (playerIds.Count != 2)
-                {//轮盘赌
-                    return false;
-                }
-                break;
-            default: return false;
+            var obj = t.Assembly.CreateInstance(className);
+
+            MethodInfo method = t.GetMethod("Judge");
+            return (bool)method.Invoke(obj, new object[] { playerIds.Count });
+            
         }
-        return true;
+        return false;
     }
 
     //开战
     public bool StartBattle(int pid)
     {
-        if (!CanStartBattle(pid))
+        type = (BattleType)pid;
+        if (!CanStartBattle())
         {
             return false;
         }
         //状态
         status = Status.FIGHT;
-        battle = BattleManager.AddBattle(pid);
+        battle = BattleManager.AddBattle(type);
         battle.Start(this,playerIds.Count);
 
         return true;

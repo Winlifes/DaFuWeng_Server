@@ -1,4 +1,4 @@
-﻿//大厅玩家信息
+﻿//玩家信息
 public class Player
 {
     //id
