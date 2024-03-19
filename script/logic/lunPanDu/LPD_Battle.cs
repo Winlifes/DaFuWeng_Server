@@ -47,6 +47,7 @@ public class LPD_Battle : Battle
             player.playOrder = 0;
             player.health = 0;
             player.items.Clear();
+            player.lPD_States.Clear();
         }
     }
 
@@ -152,18 +153,24 @@ public class LPD_Battle : Battle
         count++;
         bullet = 3 + count;
         int fakeBullet = 0,realBullet = 0;
-        for (int i = 0;i < bullet;i++)
+        while(fakeBullet==0 || realBullet==0)
         {
-            bullets[i] = new Random().Next(2);
-            if (bullets[i]==0)
+            fakeBullet = 0;
+            realBullet = 0;
+            for (int i = 0; i < bullet; i++)
             {
-                realBullet++;
-            }
-            else
-            {
-                fakeBullet++;
+                bullets[i] = new Random().Next(2);
+                if (bullets[i] == 0)
+                {
+                    realBullet++;
+                }
+                else
+                {
+                    fakeBullet++;
+                }
             }
         }
+        
         MsgNextRound msg = new MsgNextRound();
         foreach (string id in room.playerIds.Keys)
         {
