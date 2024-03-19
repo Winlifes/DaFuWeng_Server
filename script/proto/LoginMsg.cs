@@ -39,6 +39,13 @@ public class MsgSetName : MsgBase
     public int result { get; set; } = 0;
 }
 
+public class MsgExitLogin : MsgBase
+{
+	public MsgExitLogin() { protoName = "MsgExitLogin"; }
+	public string id { get; set; } = "";
+	public int result { get; set; } = 0;
+}
+
 
 //踢下线（服务端推送）
 public class MsgKick:MsgBase {

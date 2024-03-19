@@ -13,7 +13,7 @@
     //聊天内容
     public string content;
     // 计时器
-    public int time;
+    public float time;
 
     public virtual void Start(Room r, int c)
     {
@@ -32,7 +32,34 @@
 
     public virtual void Remove(Player player)
     {
-        cunHuo--;
-        
+        cunHuo--;       
+    }
+
+    public static int[] GetRandomArray(int Number, int minNum, int maxNum)
+    {
+        int j;
+        int[] b = new int[Number];
+        Random r = new Random();
+        for (j = 0; j < Number; j++)
+        {
+            int i = r.Next(minNum, maxNum + 1);
+            int num = 0;
+            for (int k = 0; k < j; k++)
+            {
+                if (b[k] == i)
+                {
+                    num++;
+                }
+            }
+            if (num == 0)
+            {
+                b[j] = i;
+            }
+            else
+            {
+                j--;
+            }
+        }
+        return b;
     }
 }

@@ -16,8 +16,17 @@ public class PlayerManager
 		return null;
 	}
 
-	//添加玩家
-	public static void AddPlayer(string id, Player player){
+    public static Player GetPlayer(int order)
+    {
+        foreach(Player p in players.Values)
+		{
+			if(p.playOrder == order) return p;
+		}
+        return null;
+    }
+
+    //添加玩家
+    public static void AddPlayer(string id, Player player){
 		players.Add(id, player);
 	}
 	//删除玩家

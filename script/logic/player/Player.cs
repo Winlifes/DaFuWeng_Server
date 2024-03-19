@@ -34,6 +34,12 @@ public class Player
 
     #endregion
 
+    #region 轮盘赌局内属性
+    public int health = 0;
+    public List<int> items = new List<int>();//id,num
+    public List<LPD_State> lPD_States = new List<LPD_State>();
+    #endregion
+
     //发送信息
     public void Send(MsgBase msgBase)
     {

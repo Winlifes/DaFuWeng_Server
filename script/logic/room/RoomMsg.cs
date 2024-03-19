@@ -49,7 +49,9 @@ public class MsgEnterRoom:MsgBase {
 public class MsgGetRoomInfo:MsgBase {
 	public MsgGetRoomInfo() {protoName = "MsgGetRoomInfo";}
 	//服务端回
+	public int id { get; set; } = 0;
 	public PlayerInfo[] players { get; set; }
+	public int result { get; set; } = 0;
 }
 
 //离开房间

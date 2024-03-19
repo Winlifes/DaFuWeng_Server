@@ -1,4 +1,14 @@
-﻿//同步信息
+﻿//进入战场（服务端推送）
+public class MsgEnterDFWBattle : MsgBase
+{
+    public MsgEnterDFWBattle() { protoName = "MsgEnterDFWBattle"; }
+    //服务端回
+    public GameData[] gameDates { get; set; }
+    public int mapId { get; set; } = 1;	//地图，只有一张
+    public int result { get; set; } = 0;
+}
+
+//同步信息
 public class MsgSaizi:MsgBase {
 	public MsgSaizi() {protoName = "MsgSaizi"; }
 	//服务端补充
@@ -15,6 +25,7 @@ public class MsgSkip:MsgBase
 	public MsgSkip() { protoName = "MsgSkip"; }
 	public int curOrder { get; set; } = 0;
 	public string name { get; set; } = "";
+    public int result { get; set; } = 0;
 }
 
 public class MsgPoCan:MsgBase
@@ -100,4 +111,14 @@ public class MsgVehicle : MsgBase
     public string name { get; set; } = "";
     public int pos { get; set; } = 0;
     public int result { get; set; } = 0;
+}
+
+//战斗结果（服务端推送）
+public class MsgBattleDFWResult : MsgBase
+{
+    public MsgBattleDFWResult() { protoName = "MsgBattleDFWResult"; }
+    //服务端回
+    public string winner { get; set; } = "";	 //获胜的阵营
+    public int money { get; set; } = 0;
+    public int property { get; set; } = 0;
 }

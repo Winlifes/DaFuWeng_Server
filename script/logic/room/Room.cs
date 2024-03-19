@@ -11,7 +11,6 @@ public class Room
     public Dictionary<string, bool> playerIds = new Dictionary<string, bool>();
 
     public Dictionary<string, string> playerNames = new Dictionary<string, string>();
-
     //房主id
     public string ownerId = "";
     //状态
@@ -35,7 +34,7 @@ public class Room
     public Battle battle = null;
 
     //添加玩家
-    public bool AddPlayer(string id)
+    public bool AddPlayer(string id,ClientState c = null)
     {
         //获取玩家
         Player player = PlayerManager.GetPlayer(id);
@@ -154,6 +153,7 @@ public class Room
     public MsgBase ToMsg()
     {
         MsgGetRoomInfo msg = new MsgGetRoomInfo();
+        msg.id = id;
         int count = playerIds.Count;
         msg.players = new PlayerInfo[count];
         //players

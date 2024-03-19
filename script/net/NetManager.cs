@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DaFuWeng_Server;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -25,7 +26,7 @@ class NetManager
 		listenfd.Bind(ipEp);
 		//Listen
 		listenfd.Listen(0);
-		Console.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss ") + "[服务器]启动成功");
+		Console.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss ")  + Program.version + "[服务器]启动成功");
 		//循环
 		while(true){
 			ResetCheckRead();  //重置checkRead

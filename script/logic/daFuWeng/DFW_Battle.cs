@@ -3,7 +3,7 @@
 public class DFW_Battle:Battle
 {
     //初始资金
-    public static int Mon = 2000;
+    private static int Mon = 2000;
     //房子
     public Dictionary<int, House> houses = new Dictionary<int, House>();
     // 宝箱
@@ -30,6 +30,10 @@ public class DFW_Battle:Battle
     {
         base.Remove(player);
         player.data.lost++;
+    }
+    private void StateInit()
+    {
+
     }
 
     private void HouseInit()
@@ -79,38 +83,12 @@ public class DFW_Battle:Battle
         fates.Add(new Fate(1, "龙卷风来袭", "随机带走地图上的一栋房子"));
     }
 
-    private static int[] GetRandomArray(int Number, int minNum, int maxNum)
-    {
-        int j;
-        int[] b = new int[Number];
-        Random r = new Random();
-        for (j = 0; j < Number; j++)
-        {
-            int i = r.Next(minNum, maxNum + 1);
-            int num = 0;
-            for (int k = 0; k < j; k++)
-            {
-                if (b[k] == i)
-                {
-                    num++;
-                }
-            }
-            if (num == 0)
-            {
-                b[j] = i;
-            }
-            else
-            {
-                j--;
-            }
-        }
-        return b;
-    }
+
 
     public void SkipJudge()
     {
         time++;
-        if (time >= 30)
+        if (time >= 1800)
         {
             //寻找当前回合玩家
             foreach (string id in room.playerIds.Keys)
@@ -118,6 +96,16 @@ public class DFW_Battle:Battle
                 Player player = PlayerManager.GetPlayer(id);
                 if (player.playOrder == curOrder)
                 {
+                    if (!player.isSaozi)//当前回合没塞
+                    {
+                        Room room = RoomManager.GetRoom(player.roomId);
+                        if(room != null)
+                        {
+                            MsgSaizi m = new MsgSaizi();
+                            player.Send(m);
+                        }
+                    }
+                    player.isSaozi = false;
                     if (player.money < 0)//当前破产玩家数据刷新
                     {
                         player.isPoCan = true;
@@ -144,7 +132,7 @@ public class DFW_Battle:Battle
                 //某一方胜利，结束战斗
                 room.status = Status.PREPARE;
                 //发送Result
-                MsgBattleResult msgB = new MsgBattleResult();
+                MsgBattleDFWResult msgB = new MsgBattleDFWResult();
                 //统计信息
                 foreach (string id in room.playerIds.Keys)
                 {
@@ -229,7 +217,7 @@ public class DFW_Battle:Battle
             player.isSaozi = false;
             player.isPoCan = false;
             player.isGuaJi = false;
-            player.property = new List<int>();
+            player.property.Clear();
         }
     }
 

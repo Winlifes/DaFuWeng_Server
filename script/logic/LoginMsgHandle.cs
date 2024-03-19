@@ -33,6 +33,7 @@ public partial class MsgHandler
         else
         {
             msg.result = 1;
+			msg.verion = Program.version;
         }
         NetManager.Send(c, msg);
     }
@@ -121,4 +122,19 @@ public partial class MsgHandler
 		msg.result = 0;
 		player.Send(msg);
 	}
+
+    public static void MsgExitLogin(ClientState c, MsgBase msgBase)
+    {
+        MsgExitLogin msg = (MsgExitLogin)msgBase;
+        Player player = c.player;
+		if(c.player.id == msg.id)
+		{
+            //保存数据
+            DbManager.UpdatePlayerData(c.player.id, c.player.data);
+            //移除
+            PlayerManager.RemovePlayer(c.player.id);
+			c.player = null;
+            player.Send(msg);
+        }
+    }
 }

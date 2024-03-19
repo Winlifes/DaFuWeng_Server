@@ -5,6 +5,32 @@ using static Room;
 public partial class MsgHandler
 {
     //大富翁逻辑
+    //进入战斗
+    public static void MsgEnterDFWBattle(ClientState c, MsgBase msgBase)
+    {
+        MsgEnterDFWBattle msg = (MsgEnterDFWBattle)msgBase;
+        Player player = c.player;
+        if (player == null) return;
+
+        Room room = RoomManager.GetRoom(player.roomId);
+        if (room == null)
+        {
+            msg.result = 1;
+            player.Send(msg);
+            return;
+        }
+        msg.mapId = 1;
+        msg.gameDates = new GameData[room.playerIds.Count];
+
+        int i = 0;
+        foreach (string id in room.playerIds.Keys)
+        {
+            Player p = PlayerManager.GetPlayer(id);
+            msg.gameDates[i] = new GameData(p.id, p.name, p.money, p.color, p.playOrder, p.position);
+            i++;
+        }
+        player.Send(msg);
+    }
     //同步位置协议
     public static void MsgSaizi(ClientState c, MsgBase msgBase)
     {
@@ -106,6 +132,7 @@ public partial class MsgHandler
         }
         //更新数值
         player.position = msg.position;
+        player.isSaozi = true;
         room.Broadcast(msg);
     }
 
@@ -154,6 +181,13 @@ public partial class MsgHandler
             return;
         }
         DFW_Battle battle = (DFW_Battle)room.battle;
+        if (!player.isSaozi)
+        {
+            msg.result = 1;
+            room.Broadcast(msg);
+            return;
+        }
+        
         if (player.money < 0)
         {
             player.isPoCan = true;
@@ -173,7 +207,7 @@ public partial class MsgHandler
             //某一方胜利，结束战斗
             room.status = Status.PREPARE;
             //发送Result
-            MsgBattleResult msgB = new MsgBattleResult();
+            MsgBattleDFWResult msgB = new MsgBattleDFWResult();
             //统计信息
             foreach (string id in room.playerIds.Keys)
             {

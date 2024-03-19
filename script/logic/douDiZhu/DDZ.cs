@@ -2,7 +2,7 @@
 {
     public bool Judge(int count)
     {
-        if (count != 3) return false;
+        if (count != 99) return false;
         else return true;
     }
 }

@@ -3,11 +3,11 @@
 public partial class EventHandler
 {
 	public static void OnDisconnect(ClientState c){
-		Console.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "Close");
 		//Player下线
 		if(c.player != null){
-			//离开战场
-			int roomId = c.player.roomId;
+            Console.WriteLine(System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss ") + c.player.id + " Close");
+            //离开战场
+            int roomId = c.player.roomId;
 			if(roomId >= 0){
 				Room room = RoomManager.GetRoom(roomId);
                 room.RemovePlayer(c.player.id);
@@ -18,11 +18,11 @@ public partial class EventHandler
 			PlayerManager.RemovePlayer(c.player.id);
 		}
 	}
-		
 
 	public static void OnTimer(){
 		CheckPing();
 		RoomManager.Update();
+		BattleManager.Update();
 	}
 
 	//Ping检查

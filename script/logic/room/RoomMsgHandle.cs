@@ -43,7 +43,7 @@ public partial class MsgHandler {
 		}
 		//创建
 		Room room = RoomManager.AddRoom();
-		room.AddPlayer(player.id);
+		room.AddPlayer(player.id,c);
 
 		msg.result = 0;
 		player.Send(msg);
@@ -87,6 +87,7 @@ public partial class MsgHandler {
 
 		Room room = RoomManager.GetRoom(player.roomId);
 		if(room == null){
+			msg.result = 1;
 			player.Send(msg);
 			return;
 		}
@@ -143,31 +144,7 @@ public partial class MsgHandler {
 		room.Broadcast(msg);
 	}
 
-	public static void MsgEnterBattle(ClientState c, MsgBase msgBase)
-	{
-		MsgEnterBattle msg = (MsgEnterBattle)msgBase;
-        Player player = c.player;
-        if (player == null) return;
-
-        Room room = RoomManager.GetRoom(player.roomId);
-		if(room == null)
-		{
-            msg.result = 1;
-            player.Send(msg);
-            return;
-        }
-        msg.mapId = 1;
-        msg.gameDates = new GameData[room.playerIds.Count];
-
-		int i = 0;
-        foreach (string id in room.playerIds.Keys)
-        {
-            Player p = PlayerManager.GetPlayer(id);
-            msg.gameDates[i] = new GameData(p.id, p.name, p.money, p.color, p.playOrder, p.position);
-            i++;
-        }
-        player.Send(msg);
-    }
+	
 
 }
 
